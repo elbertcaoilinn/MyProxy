@@ -6,6 +6,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     gcc libffi-dev libssl-dev \
     && rm -rf /var/lib/apt/lists/*
 
+# Create /data directory for state persistence
+RUN mkdir -p /data && chmod 777 /data
+
 # Python deps
 WORKDIR /app
 COPY requirements.txt .
@@ -15,7 +18,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY . .
 
 # Non-root user
-RUN useradd -m -u 1000 appuser && chown -R appuser:appuser /app
+RUN useradd -m -u 1000 appuser && chown -R appuser:appuser /app /data
 USER appuser
 
 # Railway provides PORT
